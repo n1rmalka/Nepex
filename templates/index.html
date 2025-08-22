@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nepex – QA AI Agent</title>
+  <link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body>
+  <div class="container">
+    <h1>Nepex QA Agent</h1>
+
+    <form method="post" action="/generate" class="form-card" onsubmit="return validateForm()">
+      <label for="use_case">Select Use Case:</label>
+      <select name="use_case" id="use_case" required oninvalid="this.setCustomValidity('Please Select a Use Case')"
+        oninput="this.setCustomValidity('')">
+        <option value="" disabled selected>Select a use case</option>
+        <option value="Test Cases">Test Cases</option>
+        <option value="Bug Report">Bug Report</option>
+        <option value="Release Notes">Release Notes</option>
+        <option value="Email Signoff">Email Signoff</option>
+      </select>
+
+      <label for="prompt">Type or Paste Here:</label>
+      <textarea id="prompt" name="prompt" placeholder="Enter your user story, bug details, etc..."
+        oninvalid="this.setCustomValidity('Please Type or Paste Your Input')" oninput="this.setCustomValidity('')"
+        required>{{ prompt or '' }}</textarea>
+
+      <!--    <div id="context-block" class="optional-block">
+        <label for="context">Additional Context:</label>
+        <textarea name="context" id="context"
+          placeholder="Optional: any extra info, environment, links, etc."></textarea>
+      </div> -->
+
+      <button type="submit">Get Result</button>
+    </form>
+
+    {% if response %}
+    <div class="output-card">
+      <h3>Output Preview – {{ use_case }}</h3>
+      <p class="use-case-description">
+        {% if use_case == 'Test Cases' %}
+        Generate clear and complete test cases based on the input you provide.
+        {% elif use_case == 'Bug Report' %}
+        Create detailed and easy-to-understand bug reports to help track and fix issues faster.
+        {% elif use_case == 'Release Notes' %}
+        Summarize key changes and improvements in your software for clear release communication.
+        {% elif use_case == 'Email Signoff' %}
+        Write polished and professional email sign-offs for all your messages.
+        {% endif %}
+      </p>
+
+    <div class="response-output" id="response-box">{{ response }}</div>
+
+<div class="button-group">
+        <button onclick="copyToClipboard()">Copy</button>
+
+        <form method="POST" action="/export" style="display:inline;">
+          <input type="hidden" name="text" value="{{ response }}">
+          <input type="hidden" name="use_case" value="{{ use_case }}">
+          <button type="submit">Save as .txt</button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Load your custom script -->
+  <script href="/static/script.js"></script>
+
+</body>
+
+</html>
